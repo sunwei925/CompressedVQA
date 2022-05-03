@@ -5,7 +5,7 @@ Deep Learning based Full-reference and No-reference Quality Assessment Models fo
 
 This is a repository for the models proposed in the paper "Deep Learning based Full-reference and No-reference Quality Assessment Models for Compressed UGC Videos".
 
-The proposed models won first place on the FR track and second place on the NR track in Challenge on Quality Assessment of Compressed UGC Videos.
+The proposed models won first place on the FR track and second place on the NR track in Challenge on Quality Assessment of Compressed UGC Videos hold on ICME 2021.
 
 ## Usage
 
@@ -57,9 +57,7 @@ CUDA_VISIBLE_DEVICES=0 python -u test_NR.py \
  --trained_model ckpts/UGCVQA_NR_model.pth \
 ```
 
-
-
-### ###Citation
+## Citation
 
 If you find this code is useful for your research, please cite:
 ```
@@ -72,4 +70,3 @@ If you find this code is useful for your research, please cite:
   organization={IEEE}
 }
 ```
-
