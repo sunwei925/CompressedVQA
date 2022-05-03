@@ -17,7 +17,7 @@ scipy==1.5.2
 torch==1.5.0
 torchvision==0.6.0a0+82fd1c8
 ```
-###Download Compressed UGC VQA database
+### Download Compressed UGC VQA database
 
 The compressed UGC VQA database can be downloaded from http://ugcvqa.com/.
 
