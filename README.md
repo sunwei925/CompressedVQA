@@ -33,7 +33,7 @@ NR VQA model: [Google Drive](https://drive.google.com/file/d/1K73padYMgq70zVWVVL
 
 We will release the training code later.
 
-### Test
+### Test on the Compressed UGC VQA database
 FR VQA model
 ```shell
 CUDA_VISIBLE_DEVICES=0 python -u test_FR.py \
@@ -55,6 +55,38 @@ CUDA_VISIBLE_DEVICES=0 python -u test_NR.py \
  --datainfo_test json_files/ugcset_mos.json \
  --videos_dir_test UGCCompressedVideo/ \
  --trained_model ckpts/UGCVQA_NR_model.pth \
+```
+
+### Test on the video
+#### FR VQA
+single scale + test on gpu
+```shell
+CUDA_VISIBLE_DEVICES=0 python test_FR.py --method_name=single-scale --ref videos/UGC0034_1280x720_30_crf_00.mp4 --dist videos/UGC0034_1280x720_30_crf_22.mp4 --output result.txt --is_gpu
+```
+
+using cpu (only work for windows)
+```shell
+python test_FR.py --method_name=single-scale --ref videos/UGC0034_1280x720_30_crf_00.mp4 --dist videos/UGC0034_1280x720_30_crf_22.mp4 --output result.txt
+```
+
+using multi scale strategy
+```shell
+CUDA_VISIBLE_DEVICES=0 python test_FR.py --method_name=multi-scale --ref videos/UGC0034_1280x720_30_crf_00.mp4 --dist videos/UGC0034_1280x720_30_crf_22.mp4 --output result.txt --is_gpu
+```
+
+
+#### NR VQA
+single scale 
+```shell
+CUDA_VISIBLE_DEVICES=0 python test_NR.py --method_name=single-scale --dist videos/UGC0034_1280x720_30_crf_22.mp4 --output result.txt --is_gpu
+```
+using cpu
+```shell
+python test_NR.py --method_name=single-scale --dist videos/UGC0034_1280x720_30_crf_22.mp4 --output result.txt
+```
+using multi scale strategy
+```shell
+CUDA_VISIBLE_DEVICES=0 python test_NR.py --method_name=multi-scale --dist videos/UGC0034_1280x720_30_crf_22.mp4 --output result.txt --is_gpu
 ```
 
 ## Citation
