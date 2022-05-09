@@ -3,7 +3,7 @@ Deep Learning based Full-reference and No-reference Quality Assessment Models fo
 
 ## Description
 
-This is a repository for the models proposed in the paper "Deep Learning based Full-reference and No-reference Quality Assessment Models for Compressed UGC Videos".
+This is a repository for the models proposed in the paper "Deep Learning based Full-reference and No-reference Quality Assessment Models for Compressed UGC Videos" [arxiv](https://arxiv.org/abs/2106.01111).
 
 The proposed models won first place on the FR track and second place on the NR track in Challenge on Quality Assessment of Compressed UGC Videos hold on ICME 2021.
 
@@ -31,7 +31,43 @@ NR VQA model: [Google Drive](https://drive.google.com/file/d/1K73padYMgq70zVWVVL
 
 ### Train
 
-We will release the training code later.
+FR VQA model
+```shell
+CUDA_VISIBLE_DEVICES=0 python -u train_FR.py \
+ --database UGCCompressed \
+ --model_name UGCVQA_FR_model \
+ --conv_base_lr 0.0001 \
+ --datainfo_test json_files/ugcset_dmos.json \
+ --videos_dir_test UGCCompressedVideo/ \
+ --epochs 100 \
+ --train_batch_size 6 \
+ --print_samples 1000 \
+ --num_workers 8 \
+ --ckpt_path ckpts \
+ --decay_ratio 0.9 \
+ --decay_interval 10 \
+ --reults_path results \
+ --exp_version 0
+```
+
+NR VQA model
+```shell
+CUDA_VISIBLE_DEVICES=0 python -u train_NR.py \
+ --database UGCCompressed \
+ --model_name UGCVQA_NR_model \
+ --conv_base_lr 0.0001 \
+ --datainfo_test json_files/ugcset_mos.json \
+ --videos_dir_test UGCCompressedVideo/ \
+ --epochs 100 \
+ --train_batch_size 6 \
+ --print_samples 1000 \
+ --num_workers 8 \
+ --ckpt_path ckpts \
+ --decay_ratio 0.9 \
+ --decay_interval 10 \
+ --reults_path results \
+ --exp_version 0
+```
 
 ### Test on the Compressed UGC VQA database
 FR VQA model
@@ -57,7 +93,7 @@ CUDA_VISIBLE_DEVICES=0 python -u test_NR.py \
  --trained_model ckpts/UGCVQA_NR_model.pth \
 ```
 
-### Test on the video
+### Test on the demo video
 #### FR VQA
 single scale + test on gpu
 ```shell

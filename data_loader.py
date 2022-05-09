@@ -1,5 +1,4 @@
 # -*- coding: utf-8
-
 import os
 
 import pandas as pd
@@ -39,7 +38,6 @@ class VideoDataset_NR(data.Dataset):
     def __getitem__(self, idx):
         video_name = self.video_names[idx]
         video_score = torch.FloatTensor(np.array(float(self.score[idx])))
-
         filename=os.path.join(self.videos_dir, video_name.replace('.yuv', '.mp4'))
 
         video_capture = cv2.VideoCapture()
@@ -51,35 +49,39 @@ class VideoDataset_NR(data.Dataset):
         video_height_crop = 448
         video_width_crop = 448
 
-        video_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-        video_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        # video_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        # video_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 
         video_length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-       
-        video_length_read = 10
+        video_frame_rate = int(round(cap.get(cv2.CAP_PROP_FPS)))
+    
+        video_length_read = int(video_length*2/video_frame_rate)
 
-        transformed_video = torch.zeros([video_length_read, video_channel,  video_height_crop, video_width_crop])
+        transformed_video = torch.zeros([video_length_read, video_channel, video_height_crop, video_width_crop])
                 
+        video_read_index = 0
         frame_idx = 0
-        frame_ts = video_capture.get(0)
+                
         for i in range(video_length):
-            # the current time: ms
-            last_ts = video_capture.get(0)
             has_frames, frame = video_capture.read()
-            
-            if last_ts >= frame_ts and frame_idx < video_length_read:
-                if frame_idx <= video_length_read:
-                    frame_ts = frame_ts + 500
-                    frame = Image.fromarray(cv2.cvtColor(frame,cv2.COLOR_BGR2RGB))
-                    frame = self.transform(frame)                  
-                    transformed_video[frame_idx] = frame
-                    frame_idx = frame_idx+1
+            if has_frames:
+                # key frame
+                if (video_read_index < video_length_read) and ((frame_idx*2) % video_frame_rate == 0):
 
-        
+                    read_frame = Image.fromarray(cv2.cvtColor(frame,cv2.COLOR_BGR2RGB))
+                    read_frame = self.transform(read_frame)
+                    transformed_video[video_read_index] = read_frame
+                    video_read_index += 1
+
+                frame_idx += 1
+
+        if video_read_index < video_length_read:
+            for i in range(video_read_index, video_length_read):
+                transformed_video[i] = transformed_video[video_read_index - 1]
+
         video_capture.release()
 
         return transformed_video, video_score, video_name
-
 
 class VideoDataset_FR(data.Dataset):
     """Read data from the original dataset for feature extraction"""
@@ -129,33 +131,37 @@ class VideoDataset_FR(data.Dataset):
             video_height_crop = 448
             video_width_crop = 448
 
-            video_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-            video_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+            # video_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+            # video_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 
             video_length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+            video_frame_rate = int(round(cap.get(cv2.CAP_PROP_FPS)))
         
-            video_length_read = 5
+            video_length_read = int(video_length*2/video_frame_rate)
 
-            transformed_video = torch.zeros([video_length_read, video_channel,  video_height_crop, video_width_crop])
+            transformed_video = torch.zeros([video_length_read, video_channel, video_height_crop, video_width_crop])
                     
+            video_read_index = 0
             frame_idx = 0
-            frame_ts = video_capture.get(0)
+                    
             for i in range(video_length):
-                # the current time: ms
-                last_ts = video_capture.get(0)
                 has_frames, frame = video_capture.read()
-                
-                if last_ts >= frame_ts and frame_idx < video_length_read:
-                    if frame_idx <= video_length_read:
-                        frame_ts = frame_ts + 1000
-                        frame = Image.fromarray(cv2.cvtColor(frame,cv2.COLOR_BGR2RGB))
-                        frame = self.transform(frame)                  
-                        transformed_video[frame_idx] = frame
-                        frame_idx = frame_idx+1
+                if has_frames:
+                    # key frame
+                    if (video_read_index < video_length_read) and ((frame_idx*2) % video_frame_rate == 0):
 
-            
+                        read_frame = Image.fromarray(cv2.cvtColor(frame,cv2.COLOR_BGR2RGB))
+                        read_frame = self.transform(read_frame)
+                        transformed_video[video_read_index] = read_frame
+                        video_read_index += 1
+
+                    frame_idx += 1
+
+            if video_read_index < video_length_read:
+                for i in range(video_read_index, video_length_read):
+                    transformed_video[i] = transformed_video[video_read_index - 1]
+    
             video_capture.release()
             video[i_type] = transformed_video
-
 
         return video['ref'], video['dis'], video_score, video_name_dis
