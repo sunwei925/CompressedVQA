@@ -37,8 +37,8 @@ CUDA_VISIBLE_DEVICES=0 python -u train_FR.py \
  --database UGCCompressed \
  --model_name UGCVQA_FR_model \
  --conv_base_lr 0.0001 \
- --datainfo_test json_files/ugcset_dmos.json \
- --videos_dir_test UGCCompressedVideo/ \
+ --datainfo json_files/ugcset_dmos.json \
+ --videos_dir UGCCompressedVideo/ \
  --epochs 100 \
  --train_batch_size 6 \
  --print_samples 1000 \
@@ -56,8 +56,8 @@ CUDA_VISIBLE_DEVICES=0 python -u train_NR.py \
  --database UGCCompressed \
  --model_name UGCVQA_NR_model \
  --conv_base_lr 0.0001 \
- --datainfo_test json_files/ugcset_mos.json \
- --videos_dir_test UGCCompressedVideo/ \
+ --datainfo json_files/ugcset_mos.json \
+ --videos_dir UGCCompressedVideo/ \
  --epochs 100 \
  --train_batch_size 6 \
  --print_samples 1000 \

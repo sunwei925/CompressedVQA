@@ -17,7 +17,7 @@ from torchvision import transforms
 
 class VideoDataset_NR(data.Dataset):
     """Read data from the original dataset for feature extraction"""
-    def __init__(self, data_dir, json_path, transform, is_train):
+    def __init__(self, data_dir, json_path, transform, size, is_train):
         super(VideoDataset_NR, self).__init__()
         with open(json_path, 'r') as f:
             mos_file_content = json.loads(f.read())
@@ -30,6 +30,7 @@ class VideoDataset_NR(data.Dataset):
 
         self.videos_dir = data_dir
         self.transform = transform
+        self.size = size
         self.length = len(self.video_names)
 
     def __len__(self):
@@ -46,8 +47,8 @@ class VideoDataset_NR(data.Dataset):
 
         video_channel = 3
 
-        video_height_crop = 448
-        video_width_crop = 448
+        video_height_crop = self.size
+        video_width_crop = self.size
 
         # video_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
         # video_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -85,7 +86,7 @@ class VideoDataset_NR(data.Dataset):
 
 class VideoDataset_FR(data.Dataset):
     """Read data from the original dataset for feature extraction"""
-    def __init__(self, data_dir, json_path, transform, is_train):
+    def __init__(self, data_dir, json_path, transform, size ,is_train):
         super(VideoDataset_FR, self).__init__()
 
         with open(json_path, 'r') as f:
@@ -101,6 +102,7 @@ class VideoDataset_FR(data.Dataset):
 
         self.videos_dir = data_dir
         self.transform = transform
+        self.size = size
         self.length = len(self.score)
 
     def __len__(self):
@@ -128,8 +130,8 @@ class VideoDataset_FR(data.Dataset):
 
             video_channel = 3
 
-            video_height_crop = 448
-            video_width_crop = 448
+            video_height_crop = self.size
+            video_width_crop = self.size
 
             # video_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
             # video_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))

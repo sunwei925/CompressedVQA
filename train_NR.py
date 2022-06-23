@@ -67,8 +67,8 @@ def main(config):
     transformations_test = transforms.Compose([transforms.Resize(520),transforms.CenterCrop(448),transforms.ToTensor(),\
         transforms.Normalize(mean = [0.485, 0.456, 0.406], std = [0.229, 0.224, 0.225])])
 
-    trainset = VideoDataset_NR(videos_dir, datainfo, transformations_train, 448, is_test = False)
-    testset = VideoDataset_NR(videos_dir, datainfo, transformations_test, 448, is_test = True)
+    trainset = VideoDataset_NR(videos_dir, datainfo, transformations_train, 448, is_train = True)
+    testset = VideoDataset_NR(videos_dir, datainfo, transformations_test, 448, is_train = False)
 
     ## dataloader
     train_loader = torch.utils.data.DataLoader(trainset, batch_size=config.train_batch_size,
@@ -191,6 +191,7 @@ if __name__ == '__main__':
     parser.add_argument('--epochs', type=int)
 
     parser.add_argument('--ckpt_path', type=str)
+    parser.add_argument('--reults_path', type=str)
     parser.add_argument('--multi_gpu', action='store_true')
 
     config = parser.parse_args()
